@@ -6,6 +6,20 @@ function go(id){history.push(page);page=id;notice='';render();scrollToBeginning(
 function updateSearch(input){const start=input.selectionStart,end=input.selectionEnd;query=input.value;render();const fresh=document.getElementById("q");if(fresh){fresh.focus({preventScroll:true});fresh.setSelectionRange(start,end)}}
 function set(k,v){form[k]=v;render()}function toggle(k,id){let a=k==='saved'?saved:compared;let i=a.indexOf(id);if(i>=0)a.splice(i,1);else if(k==='saved'||a.length<3)a.push(id);else notice='Puedes comparar hasta tres alternativas al mismo tiempo.';render()}
 function btn(t,action,secondary=false,disabled=false){return `<button ${disabled?'disabled':''} class="${secondary?'secondary':''}" onclick="${action}">${t}</button>`}function head(tag,title,desc){return `<p class="eyebrow">${tag}</p><h1 tabindex="-1">${title}</h1><p>${desc}</p>`}function choice(k,items){return items.map(([v,t])=>`<button aria-pressed="${form[k]===v}" class="choice ${form[k]===v?'active':''}" onclick="set('${k}','${v}')">${form[k]===v?'✓ ':''}${t}</button>`).join('')}function field(k,label,items){return `<label for="${k}">${label}</label><select id="${k}" onchange="set('${k}',this.value)"><option value="">Selecciona una opción</option>${items.map(([v,t])=>`<option value="${v}" ${form[k]===v?'selected':''}>${t}</option>`).join('')}</select>`}function box(title,desc){return `<section class="box"><h2>${title}</h2><p>${desc}</p></section>`}function help(title,desc){return `<details><summary>${title}</summary><p>${desc}</p></details>`}
+function updateSearch(input) {
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+
+    query = input.value;
+    render();
+
+    const newInput = document.getElementById('q');
+
+    if (newInput) {
+        newInput.focus({ preventScroll: true });
+        newInput.setSelectionRange(start, end);
+    }
+}
 function render(){let h=history.length&&page!=='home'?btn('← Volver','back()',true):'';$('nav').innerHTML='<b>Tu espacio</b>'+[['home','Inicio'],['explore','Explorar'],['learn','Aprender'],['compare','Comparar'],['saved','Guardados']].map(([id,t])=>btn(t,`go('${id}')`,true)).join('')+'<p class="warning muted">Los productos, montos, costos y plazos son ficticios y solo demuestran la experiencia.</p>';
 if(page==='home')h+=head('Bienvenido a Invertú','Invertir comienza por entender.','Descubre, comprende y compara alternativas de inversión a tu ritmo.')+'<div class="hero"><h2>No necesitas saberlo todo para comenzar.</h2><p>Te acompañamos en cada paso.</p></div>'+btn('Descubrir paso a paso',"go('level')")+btn('Explorar por mi cuenta',"go('explore')",true)+'<p class="muted">Explorar no implica contratar una inversión.</p>';
 if(page==='level')h+=head('Paso 1 de 3','¿Qué tanto conoces sobre inversiones?','Queremos conocer tu experiencia para acompañarte mejor durante el recorrido.')+choice('level',[['new','Estoy empezando.'],['some','Conozco algunas opciones.'],['experienced','Ya he invertido.']])+btn('Continuar',"go('goal')",false,!form.level);
